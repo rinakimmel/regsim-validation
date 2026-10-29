@@ -16,7 +16,6 @@
  *                       and throughput in requests/sec.
  */
 
-#define _GNU_SOURCE
 #include "../include/test_framework.h"
 #include "../include/client.h"
 #include "../include/protocol.h"

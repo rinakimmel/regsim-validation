@@ -14,7 +14,6 @@
  * armed/disarmed as needed.
  */
 
-#define _GNU_SOURCE   /* signalfd, timerfd, epoll */
 #include "server.h"
 #include "protocol.h"
 #include "regfile.h"
@@ -666,7 +665,10 @@ int server_run(const server_config_t *cfg) {
             /* Timer event */
             if (fd == srv.timer_fd) {
                 uint64_t exp;
-                (void)read(srv.timer_fd, &exp, sizeof(exp));
+                ssize_t r = read(srv.timer_fd, &exp, sizeof(exp));
+                if (r < 0 && errno != EAGAIN) {
+                    /* timerfd read failed, but we can still sweep */
+                }
                 idle_sweep(&srv);
                 continue;
             }
